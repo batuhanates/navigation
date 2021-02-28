@@ -1120,6 +1120,7 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
 {
   std::string laser_scan_frame_id = stripSlash(laser_scan->header.frame_id);
   last_laser_received_ts_ = ros::Time::now();
+  ros::WallTime start_time = ros::WallTime::now();
   if( map_ == NULL ) {
     return;
   }
@@ -1425,6 +1426,10 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
          puts("");
          }
        */
+
+      ros::WallTime end_time = ros::WallTime::now();
+      ros::WallDuration passed_time = (end_time - start_time);
+      ROS_INFO("AMCL passed time (s): %f, (ns): %ld", passed_time.toSec(), passed_time.toNSec());
 
       pose_pub_.publish(p);
       last_published_pose = p;
