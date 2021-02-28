@@ -4,16 +4,22 @@
 #include <message_filters/sync_policies/approximate_time.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
+#include <std_msgs/Float64.h>
 
 using namespace message_filters;
 
 static void callback(const geometry_msgs::PoseWithCovarianceStampedConstPtr &amclPose, const nav_msgs::OdometryConstPtr &truePose);
+
+static ros::Publisher errorPub;
 
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "amcl_error");
 
     ros::NodeHandle nh;
+
+    errorPub = nh.advertise<std_msgs::Float64>("amcl_error", 10);
+
     message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped> amclPoseSub(nh, "amcl_pose", 1);
     message_filters::Subscriber<nav_msgs::Odometry> truePose(nh, "ground_truth/state", 1);
 
@@ -43,6 +49,7 @@ static void callback(const geometry_msgs::PoseWithCovarianceStampedConstPtr &amc
 
     // double error = sqrt(error_x * error_x + error_y * error_y + error_z * error_z);
     double error = sqrt(error_x * error_x + error_y * error_y);
+    errorPub.publish(error);
 
     ROS_INFO("amcl: x: %f, y: %f, angle: %f", amcl_x, amcl_y, amcl_z);
     ROS_INFO("true: x: %f, y: %f, angle: %f", true_x, true_y, true_z);
