@@ -10,7 +10,8 @@ using namespace message_filters;
 
 static void callback(const geometry_msgs::PoseWithCovarianceStampedConstPtr &amclPose, const nav_msgs::OdometryConstPtr &truePose, const nav_msgs::OdometryConstPtr &fusePose);
 
-static ros::Publisher errorPub;
+static ros::Publisher amclErrorPub;
+static ros::Publisher fuseErrorPub;
 
 int main(int argc, char **argv)
 {
@@ -18,7 +19,8 @@ int main(int argc, char **argv)
 
     ros::NodeHandle nh;
 
-    errorPub = nh.advertise<std_msgs::Float64>("amcl_error", 10);
+    amclErrorPub = nh.advertise<std_msgs::Float64>("amcl_error", 10);
+    fuseErrorPub = nh.advertise<std_msgs::Float64>("fuse_error", 10);
 
     message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped> amclPoseSub(nh, "amcl_pose", 1);
     message_filters::Subscriber<nav_msgs::Odometry> truePoseSub(nh, "ground_truth/state", 1);
@@ -63,7 +65,8 @@ static void callback(const geometry_msgs::PoseWithCovarianceStampedConstPtr &amc
     // Error without yaw
     double errorAmcl = sqrt(errorAmcl_x * errorAmcl_x + errorAmcl_y * errorAmcl_y);
     double errorFuse = sqrt(errorFuse_x * errorFuse_x + errorFuse_y * errorFuse_y);
-    errorPub.publish(errorFuse);
+    amclErrorPub.publish(errorAmcl);
+    fuseErrorPub.publish(errorFuse);
 
     ROS_INFO("amcl: x: %f, y: %f, angle: %f", amcl_x, amcl_y, amcl_z);
     ROS_INFO("fuse: x: %f, y: %f, angle: %f", amcl_x, amcl_y, amcl_z);
