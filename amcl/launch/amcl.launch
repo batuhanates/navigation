@@ -1,12 +1,14 @@
 <launch>
 
 <include file="$(find map_provider)/launch/map_provider.launch" />
-<include file="$(find turtlebot3_gazebo)/launch/turtlebot3_house.launch"/>
-<include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch"/>
+<!-- <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_house.launch"/> -->
+<!-- <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch"/> -->
+<!-- <include file="$(find robot_localization)/launch/ekf_test.launch"/> -->
 
 <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find amcl)/rviz/amcl.rviz"/>
 
 <node pkg="amcl" type="amcl" name="amcl" output="screen">
+    <!-- <remap from="odom" to="odometry/filtered"/> -->
     <!-- Publish scans from best pose at a max of 10 Hz -->
     <param name="odom_model_type" value="diff"/>
     <param name="odom_alpha5" value="0.1"/>
@@ -32,18 +34,20 @@
     <param name="laser_model_type" value="likelihood_field"/>
     <!-- <param name="laser_model_type" value="beam"/> -->
     <param name="laser_likelihood_max_dist" value="2.0"/>
-    <param name="update_min_d" value="0.1"/>
+    <param name="update_min_d" value="0.01"/>
     <param name="update_min_a" value="0.25"/>
     <param name="odom_frame_id" value="odom"/>
     <param name="resample_interval" value="1"/>
     <param name="transform_tolerance" value="0.1"/>
     <param name="recovery_alpha_slow" value="0.0"/>
     <param name="recovery_alpha_fast" value="0.0"/>
-    <param name="initial_pose_x" value="-3.0"/>
-    <param name="initial_pose_y" value="1.0"/>
-    <param name="initial_pose_a" value="0.0"/>
+    <param name="initial_pose_x" value="0.25"/>
+    <param name="initial_pose_y" value="2.72"/>
+    <param name="initial_pose_a" value="-1.5708"/>
+    <!-- <param name="tf_broadcast" value="false"/> -->
 </node>
 
-<node pkg="amcl" type="amcl_error" name="amcl_error" output="screen" />
+<!-- <node pkg="amcl" type="amcl_error" name="amcl_error" output="screen" /> -->
+<node pkg="amcl" type="amcl_error_latch" name="amcl_error_latch" output="screen" />
 
 </launch>
