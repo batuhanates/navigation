@@ -47,6 +47,8 @@
     <!-- <param name="tf_broadcast" value="false"/> -->
 </node>
 
+<node pkg="tf" type="static_transform_publisher" name="center_link_broadcaster" args="-0.032 0 0 0 0 0 1 base_link center_link 10" />
+
 <!-- <node pkg="amcl" type="amcl_error" name="amcl_error" output="screen" /> -->
 <node pkg="amcl" type="amcl_error_latch" name="amcl_error_latch" output="screen" />
 
