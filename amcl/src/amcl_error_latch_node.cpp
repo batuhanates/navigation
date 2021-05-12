@@ -88,7 +88,7 @@ static void truePoseCallback(const nav_msgs::OdometryConstPtr &truePose)
     fuseErrorPub.publish(errorFuse);
 
     ROS_INFO("amcl: x: %f, y: %f, angle: %f", amcl_x, amcl_y, amcl_z);
-    ROS_INFO("fuse: x: %f, y: %f, angle: %f", amcl_x, amcl_y, amcl_z);
+    ROS_INFO("fuse: x: %f, y: %f, angle: %f", fuse_x, fuse_y, fuse_z);
     ROS_INFO("true: x: %f, y: %f, angle: %f", true_x, true_y, true_z);
     ROS_INFO("errorAmcl: %f", errorAmcl);
     ROS_INFO("errorFuse: %f", errorFuse);
