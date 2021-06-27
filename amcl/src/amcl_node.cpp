@@ -52,6 +52,7 @@
 #include "nav_msgs/GetMap.h"
 #include "nav_msgs/SetMap.h"
 #include "std_srvs/Empty.h"
+#include "std_msgs/Duration.h"
 
 // For transform support
 #include "tf2/LinearMath/Transform.h"
@@ -250,6 +251,7 @@ class AmclNode
     ros::NodeHandle private_nh_;
     ros::Publisher pose_pub_;
     ros::Publisher particlecloud_pub_;
+    ros::Publisher duration_pub_;
     ros::ServiceServer global_loc_srv_;
     ros::ServiceServer nomotion_update_srv_; //to let amcl update samples without requiring motion
     ros::ServiceServer set_map_srv_;
@@ -472,6 +474,7 @@ AmclNode::AmclNode() :
 
   pose_pub_ = nh_.advertise<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 2, true);
   particlecloud_pub_ = nh_.advertise<geometry_msgs::PoseArray>("particlecloud", 2, true);
+  duration_pub_ = nh_.advertise<std_msgs::Duration>("amcl_duration", 2, true);
   global_loc_srv_ = nh_.advertiseService("global_localization", 
 					 &AmclNode::globalLocalizationCallback,
                                          this);
@@ -1429,7 +1432,11 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
 
       ros::WallTime end_time = ros::WallTime::now();
       ros::WallDuration passed_time = (end_time - start_time);
-      ROS_INFO("AMCL passed time (s): %f, (ns): %ld", passed_time.toSec(), passed_time.toNSec());
+      std_msgs::Duration duration = std_msgs::Duration();
+      duration.data.sec = passed_time.sec;
+      duration.data.nsec = passed_time.nsec;
+      duration_pub_.publish(duration);
+      // ROS_INFO("AMCL passed time (s): %f, (ns): %ld", passed_time.toSec(), passed_time.toNSec());
 
       pose_pub_.publish(p);
       last_published_pose = p;
