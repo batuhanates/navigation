@@ -2,8 +2,10 @@
 
 <include file="$(find map_provider)/launch/map_provider.launch" />
 <!-- <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_house.launch"/> -->
-<!-- <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch"/> -->
+<include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch"/>
 <!-- <include file="$(find robot_localization)/launch/ekf_test.launch"/> -->
+
+<node pkg="robot_detector" type="robot_detector.py" name="robot_detector" output="screen"/>
 
 <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find amcl)/rviz/amcl.rviz"/>
 
@@ -15,8 +17,8 @@
     <param name="transform_tolerance" value="0.2" />
     <param name="gui_publish_rate" value="10.0"/>
     <param name="laser_max_beams" value="30"/>
-    <param name="min_particles" value="500"/>
-    <param name="max_particles" value="5000"/>
+    <param name="min_particles" value="20"/>
+    <param name="max_particles" value="20"/>
     <param name="kld_err" value="0.05"/>
     <param name="kld_z" value="0.99"/>
     <param name="odom_alpha1" value="0.2"/>
@@ -41,15 +43,16 @@
     <param name="transform_tolerance" value="0.1"/>
     <param name="recovery_alpha_slow" value="0.0"/>
     <param name="recovery_alpha_fast" value="0.0"/>
-    <param name="initial_pose_x" value="0.25"/>
-    <param name="initial_pose_y" value="2.72"/>
+    <param name="initial_pose_x" value="0.26"/>
+    <param name="initial_pose_y" value="2.714"/>
     <param name="initial_pose_a" value="-1.5708"/>
     <!-- <param name="tf_broadcast" value="false"/> -->
 </node>
 
 <node pkg="tf" type="static_transform_publisher" name="center_link_broadcaster" args="-0.032 0 0 0 0 0 1 base_link center_link 10" />
 
-<!-- <node pkg="amcl" type="amcl_error" name="amcl_error" output="screen" /> -->
-<node pkg="amcl" type="amcl_error_latch" name="amcl_error_latch" output="screen" />
+<node pkg="amcl" type="base_to_center.py" name="base_to_center" output="screen" />
+
+<node pkg="amcl" type="amcl_error" name="amcl_error" output="screen" />
 
 </launch>
