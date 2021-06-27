@@ -88,7 +88,6 @@ target_link_libraries(amcl_sensors amcl_map amcl_pf)
 add_executable(amcl
                        src/amcl_node.cpp)
 add_executable(amcl_error src/amcl_error_node.cpp)
-add_executable(amcl_error_latch src/amcl_error_latch_node.cpp)
 add_dependencies(amcl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(amcl
@@ -98,12 +97,6 @@ target_link_libraries(amcl
 )
 
 target_link_libraries(amcl_error
-    amcl_sensors amcl_map amcl_pf
-    ${Boost_LIBRARIES}
-    ${catkin_LIBRARIES}
-)
-
-target_link_libraries(amcl_error_latch
     amcl_sensors amcl_map amcl_pf
     ${Boost_LIBRARIES}
     ${catkin_LIBRARIES}
